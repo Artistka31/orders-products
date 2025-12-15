@@ -71,3 +71,5 @@ export const products = [
 
 export const getProductsByOrder = (orderId) =>
   products.filter((p) => p.order === orderId);
+
+export const getOrder = (id) => orders.find((o) => o.id === Number(id));
