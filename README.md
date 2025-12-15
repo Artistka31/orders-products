@@ -4,7 +4,7 @@ Single-page application for managing orders, groups, and products.
 
 ---
 
-## 🛠 Technologies
+## Technologies
 
 - **React 18**
 - **Vite 7.2.6** — build tool and dev server
@@ -18,10 +18,29 @@ Single-page application for managing orders, groups, and products.
 
 ## Project Setup
 
-### Create project
+### Backend (WebSocket Server)
+
+1. Go to the server folder:
 
 ```bash
-npm create vite@latest orders-products -- --template react
-cd orders-products
+cd server
+
+Run server:
+node server.js
+
+Server will run on: http://localhost:3001
+```
+
+### Frontend
+
+1. Install dependencies:
+
+```bash
 npm install
+
+Run frontend (Vite dev server):
+npm run dev
+
+Open in Browser
+http://localhost:5173
 ```
