@@ -13,6 +13,7 @@ Single-page application for managing orders, groups, and products.
 - **React Transition Group 4.4.5** — animations
 - **Animate.css 4.1.1** — CSS animations
 - **Socket.IO Client 4.8.1** — WebSocket connection
+- **Express 5.2.1**
 
 ---
 
@@ -28,7 +29,7 @@ cd server
 Run server:
 node server.js
 
-Server will run on: http://localhost:3001
+Server will run on: http://localhost:3000
 ```
 
 ### Frontend
