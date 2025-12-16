@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "animate.css";
-import "./app.css";
+import "./App.css";
 import Home from "./pages/Home.jsx";
 import Header from "./components/Header.jsx";
 import Incoming from "./pages/Incoming";
