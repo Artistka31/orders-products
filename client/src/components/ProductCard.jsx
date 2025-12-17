@@ -5,9 +5,8 @@ import ConfirmModal from "./ConfirmModal";
 import { formatNumber } from "../utils/formatPrice.js";
 
 export default function ProductCard({ product }) {
-  const deleteProduct = useStore((s) => s.deleteProduct);
-  const updateProductStatus = useStore((s) => s.updateProductStatus);
-  const updateProductField = useStore((s) => s.updateProductField);
+  const deleteProductAPI = useStore((s) => s.deleteProductAPI);
+  const updateProductFieldAPI = useStore((s) => s.updateProductFieldAPI);
 
   const orders = useStore((s) => s.orders);
 
@@ -16,8 +15,8 @@ export default function ProductCard({ product }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleDelete = () => {
-    deleteProduct(product.id);
+  const handleDelete = async () => {
+    await deleteProductAPI(product.id);
     setIsModalOpen(false);
   };
 
@@ -54,18 +53,17 @@ export default function ProductCard({ product }) {
               product.status === "Свободен" ? "text-(--text)" : "text-gray-600"
             }`}
             value={product.status}
-            onChange={(e) => {
+            onChange={async (e) => {
               const newStatus = e.target.value;
 
-              updateProductStatus(product.id, newStatus);
+              await updateProductFieldAPI(product.id, "status", newStatus);
 
-              // Auto-synchronization condition
               if (newStatus === "Свободен") {
-                updateProductField(product.id, "condition", "Новый");
-                updateProductField(product.id, "spec", "Новый");
+                await updateProductFieldAPI(product.id, "condition", "Новый");
+                await updateProductFieldAPI(product.id, "spec", "Новый");
               } else {
-                updateProductField(product.id, "condition", "Б/У");
-                updateProductField(product.id, "spec", "Б/У");
+                await updateProductFieldAPI(product.id, "condition", "Б/У");
+                await updateProductFieldAPI(product.id, "spec", "Б/У");
               }
             }}
           >
@@ -89,8 +87,8 @@ export default function ProductCard({ product }) {
             className="appearance-none min-w-[130px] sm:min-w-[150px] font-semibold text-sm border-none outline-0 text-gray-500 text-left lg:text-center"
             value={product.condition || "новый"}
             onChange={(e) => {
-              updateProductField(product.id, "condition", "Новый");
-              updateProductField(product.id, "spec", "Новый");
+              updateProductFieldAPI(product.id, "condition", "Новый");
+              updateProductFieldAPI(product.id, "spec", "Новый");
             }}
           >
             <option>новый</option>

@@ -7,8 +7,16 @@ import { Link } from "react-router-dom";
 import getProductWord from "./ProductWord.jsx";
 
 export default function OrderCard({ order }) {
-  const deleteOrder = useStore((s) => s.deleteOrder);
+  const deleteOrderAPI = useStore((s) => s.deleteOrderAPI);
   if (!order) return null;
+
+  const handleDelete = async () => {
+    try {
+      await deleteOrderAPI(order.id);
+    } catch (err) {
+      console.error("Ошибка при удалении заказа:", err);
+    }
+  };
 
   const prices = order.price ?? [];
 
@@ -23,7 +31,7 @@ export default function OrderCard({ order }) {
     >
       <div className="flex flex-col sm:flex-row w-full gap-2">
         <Link
-          to={`/incoming/${order.id}`}
+          to={`/orders/${order.id}`}
           className="grid grid-cols-[1fr_auto] grid-rows-auto gap-x-4 gap-y-2 sm:grid-cols-[minmax(90px,430px)_auto_auto_auto] sm:gap-y-0 items-start w-full"
         >
           {/* Left part — title + count */}
@@ -87,12 +95,12 @@ export default function OrderCard({ order }) {
 
           {/* Right part — date & price */}
 
-          <p className="col-start-1 row-start-2 text-xs font-semibold text-gray-400 whitespace-nowrap">
+          <p className="col-start-1 row-start-2 sm:col-auto sm:row-auto text-xs font-semibold text-gray-400 whitespace-nowrap lg:self-center">
             {order.date}
           </p>
 
           {/* PRICE */}
-          <p className="flex flex-col items-end leading-tight col-start-2 row-start-2 justify-self-end sm:col-auto sm:row-auto">
+          <p className="flex flex-col items-end leading-tight col-start-2 row-start-2 justify-self-end sm:col-auto sm:row-auto sm:justify-self-start">
             {prices.length > 0 ? (
               prices.map((p) => (
                 <span
@@ -110,7 +118,8 @@ export default function OrderCard({ order }) {
 
         <button
           className="text-gray-400 hover:text-red-700 px-2 shrink-0"
-          onClick={() => deleteOrder(order.id)}
+          /* onClick={() => deleteOrder(order.id)} */
+          onClick={handleDelete}
         >
           {/* Bucket */}
           <svg

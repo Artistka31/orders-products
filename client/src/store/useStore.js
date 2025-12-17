@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { prepareOrders } from "./prepareData";
+import { api } from "../api/api";
 
 // Create groups based on orders
 function generateGroupsFromOrders(orders) {
@@ -134,6 +135,102 @@ export const useStore = create(
 
       searchQuery: "",
       setSearchQuery: (q) => set({ searchQuery: q }),
+
+      loadOrders: async () => {
+        const { data } = await api.get("/orders");
+        set({
+          orders: data,
+          groups: generateGroupsFromOrders(data),
+          products: data.flatMap((o) => o.products),
+        });
+      },
+
+      addOrderAPI: async (payload) => {
+        const { data } = await api.post("/orders", payload);
+        set((state) => {
+          const updated = [...state.orders, data];
+          return {
+            orders: updated,
+            groups: generateGroupsFromOrders(updated),
+          };
+        });
+      },
+
+      deleteOrderAPI: async (id) => {
+        await api.delete(`/orders/${id}`);
+
+        set((state) => {
+          const updatedOrders = state.orders.filter((o) => o.id !== id);
+
+          return {
+            orders: updatedOrders,
+            groups: generateGroupsFromOrders(updatedOrders),
+            products: state.products.filter((p) => p.orderId !== id),
+          };
+        });
+      },
+
+      addProductAPI: async (orderId, payload) => {
+        const { data } = await api.post(`/orders/${orderId}/products`, payload);
+
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, products: [...o.products, data] } : o
+          ),
+          products: [...state.products, data],
+        }));
+      },
+
+      // DELETE product via API
+      deleteProductAPI: async (productId) => {
+        await api.delete(`/products/${productId}`);
+
+        set((state) => ({
+          orders: state.orders.map((o) => ({
+            ...o,
+            products: o.products.filter((p) => p.id !== productId),
+          })),
+          products: state.products.filter((p) => p.id !== productId),
+        }));
+      },
+
+      // UPDATE product field via API
+      updateProductFieldAPI: async (productId, field, value) => {
+        const { data } = await api.put(`/products/${productId}`, {
+          field,
+          value,
+        });
+
+        set((state) => ({
+          orders: state.orders.map((o) => ({
+            ...o,
+            products: o.products.map((p) =>
+              p.id === productId ? { ...p, [field]: data[field] } : p
+            ),
+          })),
+          products: state.products.map((p) =>
+            p.id === productId ? { ...p, [field]: data[field] } : p
+          ),
+        }));
+      },
+      updateProductStatusAPI: async (productId, status) => {
+        const { data } = await api.put(`/products/${productId}`, {
+          field: "status",
+          value: status,
+        });
+
+        set((state) => ({
+          orders: state.orders.map((o) => ({
+            ...o,
+            products: o.products.map((p) =>
+              p.id === productId ? { ...p, status: data.status } : p
+            ),
+          })),
+          products: state.products.map((p) =>
+            p.id === productId ? { ...p, status: data.status } : p
+          ),
+        }));
+      },
     }),
     { name: "warehouse-store" }
   )

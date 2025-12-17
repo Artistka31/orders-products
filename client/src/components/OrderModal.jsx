@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 
 export default function OrderModal({ onClose }) {
-  const addOrder = useStore((s) => s.addOrder);
+  const addOrderAPI = useStore((s) => s.addOrderAPI);
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -11,41 +11,60 @@ export default function OrderModal({ onClose }) {
   const [priceUAH, setPriceUAH] = useState("");
 
   const [closing, setClosing] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const handleCreate = (e) => {
+  const validate = () => {
+    const errs = {};
+
+    if (!title.trim()) errs.title = "Название прихода обязательно";
+    if (!date) errs.date = "Дата обязательна";
+
+    if (priceUSD && Number(priceUSD) <= 0)
+      errs.priceUSD = "Цена USD должна быть положительной";
+
+    if (priceUAH && Number(priceUAH) <= 0)
+      errs.priceUAH = "Цена UAH должна быть положительной";
+
+    return errs;
+  };
+
+  const handleCreate = async (e) => {
     e.preventDefault();
-    setClosing(true);
+
+    const errs = validate();
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
+
     let price = [];
 
-    if (priceUSD.trim() !== "") {
-      price.push({
-        value: Number(priceUSD),
-        symbol: "USD",
-        isDefault: 0,
-      });
+    if (priceUSD.trim()) {
+      price.push({ value: Number(priceUSD), symbol: "USD", isDefault: 0 });
     }
 
-    if (priceUAH.trim() !== "") {
-      price.push({
-        value: Number(priceUAH),
-        symbol: "UAH",
-        isDefault: 1,
-      });
+    if (priceUAH.trim()) {
+      price.push({ value: Number(priceUAH), symbol: "UAH", isDefault: 1 });
     }
-    setTimeout(() => {
-      addOrder({
-        title: title.trim() || null,
+
+    try {
+      await addOrderAPI({
+        title: title.trim(),
         date,
         price: price.length ? price : null,
       });
 
-      onClose();
-    }, 250);
+      setClosing(true);
+      setTimeout(onClose, 400);
+    } catch (err) {
+      console.error(err);
+      setErrors({ api: "Ошибка создания прихода" });
+    }
   };
 
   const handleClose = () => {
     setClosing(true);
-    setTimeout(onClose, 250); // time = slideDown
+    setTimeout(onClose, 400);
   };
 
   return (
@@ -80,35 +99,61 @@ export default function OrderModal({ onClose }) {
 
           {/* Grid 2 columns */}
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Название прихода"
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm placeholder-gray-400 focus:outline-none"
-            />
+            <div>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Название прихода"
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm placeholder-gray-400 focus:outline-none"
+              />
+              {errors.title && (
+                <span className="text-red-500 text-xs mt-1">
+                  {errors.title}
+                </span>
+              )}
+            </div>
 
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-            />
+            <div>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
+              />
+              {errors.date && (
+                <span className="text-red-500 text-xs mt-1">{errors.date}</span>
+              )}
+            </div>
 
-            <input
-              type="number"
-              placeholder="Цена USD"
-              value={priceUSD}
-              onChange={(e) => setPriceUSD(e.target.value)}
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-            />
+            <div>
+              <input
+                type="number"
+                placeholder="Цена USD"
+                value={priceUSD}
+                onChange={(e) => setPriceUSD(e.target.value)}
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
+              />
+              {errors.priceUSD && (
+                <span className="text-red-500 text-xs mt-1">
+                  {errors.priceUSD}
+                </span>
+              )}
+            </div>
 
-            <input
-              type="number"
-              placeholder="Цена UAH"
-              value={priceUAH}
-              onChange={(e) => setPriceUAH(e.target.value)}
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-            />
+            <div>
+              <input
+                type="number"
+                placeholder="Цена UAH"
+                value={priceUAH}
+                onChange={(e) => setPriceUAH(e.target.value)}
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
+              />
+              {errors.priceUAH && (
+                <span className="text-red-500 text-xs mt-1">
+                  {errors.priceUAH}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

@@ -4,13 +4,13 @@ import ConfirmModal from "./ConfirmModal";
 import { useState } from "react";
 
 export default function ProductRow({ product }) {
-  const deleteProduct = useStore((s) => s.deleteProduct);
-  const updateProductStatus = useStore((s) => s.updateProductStatus);
+  const deleteProductAPI = useStore((s) => s.deleteProductAPI);
+  const updateProductStatusAPI = useStore((s) => s.updateProductStatusAPI);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = () => {
-    deleteProduct(product.id);
+    deleteProductAPI(product.id);
     setIsModalOpen(false);
   };
 
@@ -49,7 +49,7 @@ export default function ProductRow({ product }) {
           <select
             className="appearance-none font-semibold text-sm border-none outline-0"
             value={product.status}
-            onChange={(e) => updateProductStatus(product.id, e.target.value)}
+            onChange={(e) => updateProductStatusAPI(product.id, e.target.value)}
           >
             <option>Свободен</option>
             <option>В ремонте</option>
@@ -136,7 +136,9 @@ export default function ProductRow({ product }) {
                   : "text-gray-600"
               }`}
               value={product.status}
-              onChange={(e) => updateProductStatus(product.id, e.target.value)}
+              onChange={(e) =>
+                updateProductStatusAPI(product.id, e.target.value)
+              }
             >
               <option>Свободен</option>
               <option>В ремонте</option>

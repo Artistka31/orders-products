@@ -21,6 +21,7 @@ export default function ProductPanel({
     (s) => s.products,
     (oldArr, newArr) => oldArr.length === newArr.length
   );
+
   const filteredProducts = useMemo(
     () => products.filter((p) => p.groupId === group.id),
     [products, group.id]
@@ -31,12 +32,26 @@ export default function ProductPanel({
     setTimeout(() => onClose(), 500); // after 0.5s completely close
   };
 
-  const addProductToGroupAndOrder = useStore(
-    (s) => s.addProductToGroupAndOrder
-  );
+  const addProductAPI = useStore((s) => s.addProductAPI);
 
   const handleAddProduct = (data) => {
-    addProductToGroupAndOrder(group.id, group.id, data);
+    if (!group.orderId) {
+      console.error("No orderId for this group!", group);
+      return;
+    }
+    const payload = {
+      ...data,
+      price: [
+        { value: Number(data.price1Value) || 0, symbol: data.price1Symbol },
+        { value: Number(data.price2Value) || 0, symbol: data.price2Symbol },
+      ],
+    };
+
+    addProductAPI(group.orderId, payload);
+
+    // Update local store (orders + products)
+    /* addProductToGroupAndOrder(group.orderId, group.id, payload); */
+
     setShowModal(false);
   };
 
@@ -124,6 +139,7 @@ export default function ProductPanel({
           onSubmit={handleAddProduct}
           groups={groups}
           defaultGroup={group.name}
+          orderId={group.orderId}
         />
       )}
     </div>

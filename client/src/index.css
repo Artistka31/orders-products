@@ -104,7 +104,7 @@ select:focus {
 }
 
 .animate-slideDown {
-  animation: slideDown 250ms ease-in both;
+  animation: slideDown 400ms ease-in both;
 }
 
 .animate-fadeIn {

@@ -9,16 +9,20 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, product }) {
 
   const handleClose = () => {
     setClosing(true);
-    setTimeout(onClose, 250); // ⬅ время = slideDown
+    setTimeout(onClose, 400); // time = slideDown
   };
-
   const handleConfirm = () => {
     setClosing(true);
 
-    setTimeout(() => {
-      onConfirm(); // delete
-      onClose(); // closing the modal
-    }, 250); // should match slideDown
+    setTimeout(async () => {
+      try {
+        await onConfirm(); // API
+        onClose();
+      } catch (e) {
+        console.error(e);
+        setClosing(false);
+      }
+    }, 400);
   };
 
   return createPortal(

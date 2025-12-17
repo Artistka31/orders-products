@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
+import { useStore } from "../store/useStore";
 
-export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
+export default function AddProductModal({ onClose, defaultGroup, orderId }) {
   const [closing, setClosing] = useState(false);
+
+  const [errors, setErrors] = useState({});
+  const addProductAPI = useStore((s) => s.addProductAPI);
 
   const [form, setForm] = useState({
     name: "",
@@ -37,16 +41,37 @@ export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
     }
   };
 
+  const validate = () => {
+    const errs = {};
+    if (!form.name.trim()) errs.name = "Название продукта обязательно";
+    if (!form.groupName.trim()) errs.groupName = "Название группы обязательно";
+    if (form.price1Value && Number(form.price1Value) < 0)
+      errs.price1Value = "Цена должна быть положительной";
+    if (form.price2Value && Number(form.price2Value) < 0)
+      errs.price2Value = "Цена должна быть положительной";
+    if (form.dateFrom && form.dateTo && form.dateFrom > form.dateTo)
+      errs.dateTo = "Дата окончания не может быть раньше даты начала";
+    return errs;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setClosing(true);
-    let photoUrl = "/img/monitor.png";
 
-    if (form.photo) {
-      photoUrl = await fileToBase64(form.photo);
+    const errs = validate();
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
     }
-    setTimeout(() => {
-      onSubmit({
+
+    try {
+      setClosing(true);
+
+      let photoUrl = "/img/monitor.png";
+      if (form.photo) {
+        photoUrl = await fileToBase64(form.photo);
+      }
+
+      await addProductAPI(orderId, {
         name: form.name,
         status: form.status,
         spec: form.spec,
@@ -67,13 +92,18 @@ export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
         ],
         photo: photoUrl,
       });
-      onClose();
-    }, 250);
+
+      setTimeout(onClose, 400);
+    } catch (err) {
+      console.error(err);
+      setErrors({ api: "Ошибка добавления продукта" });
+      setClosing(false);
+    }
   };
 
   const handleClose = () => {
     setClosing(true);
-    setTimeout(onClose, 250); // time = slideDown
+    setTimeout(onClose, 400); // time = slideDown
   };
 
   return createPortal(
@@ -109,22 +139,37 @@ export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
 
           {/* Grid 2 columns */}
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <input
-              type="text"
-              name="name"
-              placeholder="Название продукта"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm placeholder-gray-400 focus:outline-none"
-            />
-            <input
-              type="text"
-              name="groupName"
-              placeholder="Название группы"
-              value={form.groupName}
-              onChange={handleChange}
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-            />
+            <div>
+              <input
+                type="text"
+                name="name"
+                placeholder="Название продукта"
+                value={form.name}
+                onChange={handleChange}
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm placeholder-gray-400 focus:outline-none"
+              />
+              {errors.name && (
+                <div className="text-red-500 text-[10px] mt-1">
+                  {errors.name}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="text"
+                name="groupName"
+                placeholder="Название группы"
+                value={form.groupName}
+                onChange={handleChange}
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
+              />
+              {errors.groupName && (
+                <div className="text-red-500 text-[10px] mt-1">
+                  {errors.groupName}
+                </div>
+              )}
+            </div>
 
             <input
               type="date"
@@ -134,13 +179,20 @@ export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
               className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
             />
 
-            <input
-              type="date"
-              name="dateTo"
-              value={form.dateTo}
-              onChange={handleChange}
-              className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-            />
+            <div>
+              <input
+                type="date"
+                name="dateTo"
+                value={form.dateTo}
+                onChange={handleChange}
+                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
+              />
+              {errors.dateTo && (
+                <div className="text-red-500 text-[10px] mt-1">
+                  {errors.dateTo}
+                </div>
+              )}
+            </div>
 
             <select
               name="spec"
@@ -183,6 +235,11 @@ export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
                 onChange={handleChange}
                 className="w-24 border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
               />
+              {errors.price1Value && (
+                <div className="text-red-500 text-[10px]">
+                  {errors.price1Value}
+                </div>
+              )}
             </div>
 
             {/* price UAH */}
@@ -203,6 +260,11 @@ export default function AddProductModal({ onClose, onSubmit, defaultGroup }) {
                 onChange={handleChange}
                 className="w-24 border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
               />
+              {errors.price2Value && (
+                <div className="text-red-500 text-[10px]">
+                  {errors.price2Value}
+                </div>
+              )}
             </div>
 
             <select

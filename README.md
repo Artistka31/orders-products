@@ -2,9 +2,13 @@
 
 Single-page application for managing orders, groups, and products.
 
+**Live demo:** [https://orders-products-6jpa.onrender.com](https://orders-products-6jpa.onrender.com)
+
 ---
 
 ## Technologies
+
+## Frontend
 
 - **React 18**
 - **Vite 7.2.6** — build tool and dev server
@@ -13,7 +17,15 @@ Single-page application for managing orders, groups, and products.
 - **React Transition Group 4.4.5** — animations
 - **Animate.css 4.1.1** — CSS animations
 - **Socket.IO Client 4.8.1** — WebSocket connection
-- **Express 5.2.1**
+- **TailwindCSS 4.1.17** — styling
+- **React Helmet Async**
+
+## Backend (WebSocket Server)
+
+- **Node.js**
+- **Express 5.2.1** — backend server
+- **Socket.IO 4.8.1** — WebSocket server
+- **CORS 2.8.5** — cross-origin requests
 
 ---
 

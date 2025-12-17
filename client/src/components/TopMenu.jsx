@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
+import { useSocketStore } from "../store/useSocketStore";
 
-export default function Header() {
+export default function TopMenu() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const activeTabs = useSocketStore((s) => s.activeTabs);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -48,9 +50,9 @@ export default function Header() {
         </div>
 
         {/* Right part */}
-        <div className="flex flex-col items-end lg:items-start font-medium min-w-fit sm:mr-10 md:mr-10 lg:mr-32">
+        <div className="flex flex-col items-start font-medium min-w-fit sm:mr-10 md:mr-10 lg:mr-32">
           {/* Day of Week / Today */}
-          <div className="text-xs sm:text-sm text-gray-500">
+          <div className="flex flex-row gap-3 text-xs sm:text-sm text-gray-500">
             {(() => {
               const now = new Date();
               const isToday =
@@ -62,10 +64,14 @@ export default function Header() {
                 ? "Today"
                 : currentTime.toLocaleDateString("ru-RU", { weekday: "long" });
             })()}
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-(--text)"></span>
+              <span>{activeTabs}</span>
+            </div>
           </div>
 
           {/* Date + time */}
-          <div className="flex items-center space-x-2 text-[10px] sm:text-xs text-gray-500 mt-1">
+          <div className="flex items-center space-x-4 text-[10px] sm:text-xs text-gray-500 mt-1">
             {/* Date */}
             <span>
               {currentTime
@@ -78,7 +84,7 @@ export default function Header() {
             </span>
 
             {/* Clock */}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-2">
               <div className="w-4 h-4 rounded-full border-2 border-(--text) relative flex items-center justify-center">
                 <div className="absolute w-px h-1.5 bg-(--text) top-2 left-3 -translate-x-1.5 -translate-y-1.5 origin-bottom"></div>
                 <div className="absolute w-px h-1.5 bg-(--text) top-2 left-3 -translate-x-3 -translate-y-1.5 origin-bottom rotate-90"></div>

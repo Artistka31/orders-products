@@ -4,14 +4,13 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "animate.css";
 import "./App.css";
 import Home from "./pages/Home.jsx";
-import Header from "./components/Header.jsx";
-import Incoming from "./pages/Incoming";
+import TopMenu from "./components/TopMenu.jsx";
+import Orders from "./pages/Orders.jsx";
 import Groups from "./pages/Groups";
 import Products from "./pages/Products";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
 import OrderDetails from "./components/OrderDetails.jsx";
-import GroupOrder from "./components/GroupOrder.jsx";
 
 export default function App() {
   const location = useLocation();
@@ -23,7 +22,7 @@ export default function App() {
   }
   return (
     <>
-      <Header />
+      <TopMenu />
       <TransitionGroup component={null}>
         <CSSTransition
           key={location.pathname}
@@ -38,10 +37,9 @@ export default function App() {
           >
             <Routes location={location}>
               <Route path="/" element={<Home />}>
-                <Route path="incoming" element={<Incoming />} />
-                <Route path="incoming/:id" element={<OrderDetails />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="orders/:id" element={<OrderDetails />} />
                 <Route path="groups" element={<Groups />} />
-                <Route path="groups/:id" element={<GroupOrder />} />
                 <Route path="products" element={<Products />} />
                 <Route path="users" element={<Users />} />
                 <Route path="settings" element={<Settings />} />

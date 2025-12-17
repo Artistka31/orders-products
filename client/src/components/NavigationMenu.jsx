@@ -4,14 +4,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { createPortal } from "react-dom";
 
 const tabs = [
-  { label: "Приход", path: "/incoming" },
+  { label: "Приход", path: "/orders" },
   { label: "Группы", path: "/groups" },
   { label: "Продукты", path: "/products" },
   { label: "Пользователи", path: "/users" },
   { label: "Настройки", path: "/settings" },
 ];
 
-export default function Sidebar({ activeTab }) {
+export default function NavigationMenu({ activeTab }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
