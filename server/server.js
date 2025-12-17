@@ -141,7 +141,7 @@ app.put("/api/products/:id", (req, res) => {
 });
 
 /* Serve React build */
-/* app.use(express.static(join(__dirname, "../client/dist"))); */
+app.use(express.static(join(__dirname, "../client/dist")));
 
 // Catch-all route для React Router
 app.get(/.*/, (_, res) => {
@@ -150,6 +150,6 @@ app.get(/.*/, (_, res) => {
 
 /* Start server */
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
