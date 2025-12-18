@@ -100,7 +100,7 @@ export default function OrderCard({ order }) {
           </p>
 
           {/* PRICE */}
-          <p className="flex flex-col items-end leading-tight col-start-2 row-start-2 justify-self-end sm:col-auto sm:row-auto sm:justify-self-start">
+          <p className="flex flex-col items-end leading-tight col-start-2 row-start-2 justify-self-end sm:col-auto sm:row-auto sm:justify-self-start sm:h-full sm:justify-center">
             {prices.length > 0 ? (
               prices.map((p) => (
                 <span

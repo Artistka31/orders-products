@@ -79,7 +79,7 @@ export default function ProductPanel({
 
   return (
     <div
-      className={`fixed lg:ml-3 h-fit bg-white border-l border-gray-300 shadow-2xl z-50
+      className={`fixed lg:ml-3 h-fit bg-white border-l border-gray-300 shadow-2xl z-30 md:z-50
     ${isCompact ? "rounded-sm border" : "border-l border-gray-300"}
     ${closing ? "animate-explode" : "animate-slideLeft"}
   `}
