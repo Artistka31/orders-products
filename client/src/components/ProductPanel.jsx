@@ -49,9 +49,6 @@ export default function ProductPanel({
 
     addProductAPI(group.orderId, payload);
 
-    // Update local store (orders + products)
-    /* addProductToGroupAndOrder(group.orderId, group.id, payload); */
-
     setShowModal(false);
   };
 
