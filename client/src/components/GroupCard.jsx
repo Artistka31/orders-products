@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useRef } from "react";
-import { useMemo } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import ProductPanel from "./ProductPanel";
 import { useStore } from "../store/useStore";
 import { Link } from "react-router-dom";
@@ -49,7 +47,7 @@ export default function GroupCard({ group }) {
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center gap-3">
             <Link
-              to={`/groups/${group.id}`}
+              to={`/orders/${group.orderId}`}
               onClick={(e) => e.stopPropagation()}
             >
               <span className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-300 ml-3">

@@ -31,7 +31,6 @@ export const useStore = create(
             id: Date.now(),
             title: data.title || `Приход ${newId}`,
             date: data.date || new Date().toISOString().slice(0, 10),
-            price: data.price ?? null,
             products: [],
           };
 

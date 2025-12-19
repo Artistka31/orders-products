@@ -51,7 +51,6 @@ app.post("/api/orders", (req, res) => {
     id: Date.now(),
     title: req.body.title || `Приход ${orders.length + 1}`,
     date: req.body.date,
-    price: req.body.price ?? null,
     products: [],
   };
   orders.push(newOrder);

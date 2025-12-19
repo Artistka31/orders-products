@@ -7,9 +7,6 @@ export default function OrderModal({ onClose }) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
 
-  const [priceUSD, setPriceUSD] = useState("");
-  const [priceUAH, setPriceUAH] = useState("");
-
   const [closing, setClosing] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -18,12 +15,6 @@ export default function OrderModal({ onClose }) {
 
     if (!title.trim()) errs.title = "Название прихода обязательно";
     if (!date) errs.date = "Дата обязательна";
-
-    if (priceUSD && Number(priceUSD) <= 0)
-      errs.priceUSD = "Цена USD должна быть положительной";
-
-    if (priceUAH && Number(priceUAH) <= 0)
-      errs.priceUAH = "Цена UAH должна быть положительной";
 
     return errs;
   };
@@ -37,21 +28,10 @@ export default function OrderModal({ onClose }) {
       return;
     }
 
-    let price = [];
-
-    if (priceUSD.trim()) {
-      price.push({ value: Number(priceUSD), symbol: "USD", isDefault: 0 });
-    }
-
-    if (priceUAH.trim()) {
-      price.push({ value: Number(priceUAH), symbol: "UAH", isDefault: 1 });
-    }
-
     try {
       await addOrderAPI({
         title: title.trim(),
         date,
-        price: price.length ? price : null,
       });
 
       setClosing(true);
@@ -122,36 +102,6 @@ export default function OrderModal({ onClose }) {
               />
               {errors.date && (
                 <span className="text-red-500 text-xs mt-1">{errors.date}</span>
-              )}
-            </div>
-
-            <div>
-              <input
-                type="number"
-                placeholder="Цена USD"
-                value={priceUSD}
-                onChange={(e) => setPriceUSD(e.target.value)}
-                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-              />
-              {errors.priceUSD && (
-                <span className="text-red-500 text-xs mt-1">
-                  {errors.priceUSD}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <input
-                type="number"
-                placeholder="Цена UAH"
-                value={priceUAH}
-                onChange={(e) => setPriceUAH(e.target.value)}
-                className="w-full border-b border-gray-200 pb-2 text-xs lg:text-sm focus:outline-none"
-              />
-              {errors.priceUAH && (
-                <span className="text-red-500 text-xs mt-1">
-                  {errors.priceUAH}
-                </span>
               )}
             </div>
           </div>

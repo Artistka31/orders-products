@@ -5,6 +5,7 @@ import { formatNumber } from "../utils/formatPrice.js";
 
 import { Link } from "react-router-dom";
 import getProductWord from "./ProductWord.jsx";
+import calculateOrderPrices from "./OrderPrices.jsx";
 
 export default function OrderCard({ order }) {
   const deleteOrderAPI = useStore((s) => s.deleteOrderAPI);
@@ -18,7 +19,7 @@ export default function OrderCard({ order }) {
     }
   };
 
-  const prices = order.price ?? [];
+  const prices = calculateOrderPrices(order.products);
 
   // Count of products
   const productCount =
