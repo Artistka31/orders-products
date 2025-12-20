@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useStore } from "../store/useStore.js";
+import socket from "../api/websocket.js";
 import OrderCard from "../components/OrderCard.jsx";
 import OrderModal from "../components/OrderModal.jsx";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -16,6 +17,16 @@ export default function Orders() {
 
   useEffect(() => {
     loadOrders();
+  }, [loadOrders]);
+
+  useEffect(() => {
+    socket.on("orderCreated", loadOrders);
+    socket.on("orderUpdated", loadOrders);
+
+    return () => {
+      socket.off("orderCreated", loadOrders);
+      socket.off("orderUpdated", loadOrders);
+    };
   }, [loadOrders]);
 
   const filteredOrders = orders.filter((o) =>

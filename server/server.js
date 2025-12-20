@@ -26,20 +26,16 @@ const io = new Server(server, { cors: { origin: "*" } });
 let orders = [];
 
 // SOCKET.IO
-let tabs = 0;
 
 io.on("connection", (socket) => {
-  tabs++;
-  io.emit("tabsCount", tabs);
+  io.emit("tabsCount", io.engine.clientsCount);
 
   socket.on("disconnect", () => {
-    tabs--;
-    io.emit("tabsCount", tabs);
+    io.emit("tabsCount", io.engine.clientsCount);
   });
 });
 
 // REST API
-
 // GET orders
 app.get("/api/orders", (_, res) => {
   res.json(orders);
@@ -54,6 +50,7 @@ app.post("/api/orders", (req, res) => {
     products: [],
   };
   orders.push(newOrder);
+  io.emit("orderCreated");
   res.status(201).json(newOrder);
 });
 
@@ -86,7 +83,7 @@ app.delete("/api/orders/:id", (req, res) => {
 
   const deleted = orders[index];
   orders.splice(index, 1);
-
+  io.emit("orderUpdated"); // Notify clients about the update
   res.json(deleted);
 });
 

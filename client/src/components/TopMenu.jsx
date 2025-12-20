@@ -14,6 +14,9 @@ export default function TopMenu() {
   const searchQuery = useStore((s) => s.searchQuery);
   const setSearchQuery = useStore((s) => s.setSearchQuery);
 
+  if (activeTabs === null) {
+    return <div className="p-4 text-gray-400 text-sm">Connecting...</div>;
+  }
   return (
     <>
       <header className="flex justify-between items-center h-16 px-4 sm:px-6 bg-white shadow-md fixed top-0 left-0 right-0 z-60">
