@@ -20,14 +20,16 @@ export default function Orders() {
   }, [loadOrders]);
 
   useEffect(() => {
-    socket.on("orderCreated", loadOrders);
-    socket.on("orderUpdated", loadOrders);
+    const handleOrdersUpdate = (updatedOrders) => {
+      useStore.getState().setOrders(updatedOrders);
+    };
+
+    socket.on("ordersUpdated", handleOrdersUpdate);
 
     return () => {
-      socket.off("orderCreated", loadOrders);
-      socket.off("orderUpdated", loadOrders);
+      socket.off("ordersUpdated", handleOrdersUpdate);
     };
-  }, [loadOrders]);
+  }, []);
 
   const filteredOrders = orders.filter((o) =>
     o.title?.toLowerCase().includes(searchQuery.toLowerCase())

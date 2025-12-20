@@ -50,7 +50,7 @@ app.post("/api/orders", (req, res) => {
     products: [],
   };
   orders.push(newOrder);
-  io.emit("orderCreated");
+  io.emit("orderCreated", newOrder);
   res.status(201).json(newOrder);
 });
 
@@ -83,7 +83,7 @@ app.delete("/api/orders/:id", (req, res) => {
 
   const deleted = orders[index];
   orders.splice(index, 1);
-  io.emit("orderUpdated"); // Notify clients about the update
+  io.emit("orderUpdated", orders); // Notify clients about the update
   res.json(deleted);
 });
 
