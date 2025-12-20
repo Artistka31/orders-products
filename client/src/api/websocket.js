@@ -1,9 +1,6 @@
 import { io } from "socket.io-client";
 import { useSocketStore } from "../store/useSocketStore.js";
 
-/* const socket = io(import.meta.env.VITE_SOCKET_URL, {
-  transports: ["websocket", "polling"],
-}); */
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 const socket = io(SOCKET_URL, {
   transports: ["websocket", "polling"],

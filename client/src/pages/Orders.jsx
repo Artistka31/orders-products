@@ -21,7 +21,9 @@ export default function Orders() {
 
   useEffect(() => {
     const handleOrdersUpdate = (updatedOrders) => {
-      useStore.getState().setOrders(updatedOrders);
+      if (updatedOrders?.length) {
+        useStore.getState().setOrders(updatedOrders);
+      }
     };
 
     socket.on("ordersUpdated", handleOrdersUpdate);
