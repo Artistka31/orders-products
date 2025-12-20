@@ -50,7 +50,7 @@ app.post("/api/orders", (req, res) => {
     products: [],
   };
   orders.push(newOrder);
-  io.emit("orderCreated", newOrder);
+  io.emit("orderCreated", orders); // Notify clients about the new order
   res.status(201).json(newOrder);
 });
 

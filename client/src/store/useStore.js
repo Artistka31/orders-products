@@ -17,10 +17,12 @@ export const useStore = create(
   persist(
     (set, get) => ({
       // STATE
-      orders: prepareOrders(), // orders with embedded products
-      /* products: initialProducts, */ // raw products
+      orders: [], // global array for Orders page
       products: [], // global array for ProductPanel
-      groups: generateGroupsFromOrders(prepareOrders()),
+      groups: [],
+
+      // ORDERS
+      // Add new order
 
       addOrder: (data = {}) =>
         set((state) => {
@@ -63,6 +65,14 @@ export const useStore = create(
             groups: generateGroupsFromOrders(updatedOrders),
           };
         }),
+
+      setOrders: (orders = []) =>
+        set(() => ({
+          orders,
+          groups: generateGroupsFromOrders(orders),
+          products: orders.flatMap((o) => o.products || []),
+        })),
+
       // PRODUCTS
       addProductToGroupAndOrder: (orderId, groupId, data) => {
         const newProduct = {
