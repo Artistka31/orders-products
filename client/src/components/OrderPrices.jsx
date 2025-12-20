@@ -4,10 +4,17 @@ export default function calculateOrderPrices(products = []) {
   const map = {};
 
   products.forEach((p) => {
-    if (!p.price) return;
+    if (!Array.isArray(p.price)) return;
 
-    p.price.forEach(({ value, symbol }) => {
-      map[symbol] = (map[symbol] || 0) + Number(value || 0);
+    p.price.forEach((item) => {
+      if (!item) return;
+
+      const value = Number(item.value);
+      const symbol = item.symbol;
+
+      if (!symbol || isNaN(value)) return;
+
+      map[symbol] = (map[symbol] || 0) + value;
     });
   });
 
