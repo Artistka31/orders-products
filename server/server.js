@@ -83,7 +83,7 @@ app.delete("/api/orders/:id", (req, res) => {
 
   const deleted = orders[index];
   orders.splice(index, 1);
-  io.emit("orderUpdated", orders); // Notify clients about the update
+  io.emit("ordersUpdated", orders); // Notify clients about the update
   res.json(deleted);
 });
 
